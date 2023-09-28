@@ -1,6 +1,7 @@
 #include "app.h"
 #include "light.h"
 #include "timer.h"
+#include "button.h"
 #include "stm32f4xx_hal.h"
 
 // Variants
@@ -33,13 +34,14 @@ void app_init(void)
 {
 	timer_init();
 	light_init();
+	button_init(app_change_mode);
 	
 	timer_start(500, app_change_mode);
 }	
 
 void app_run(void)
 {
-	trafic_light_mode = red;
+	trafic_light_mode = green;
 	while(1)
 	{
 
@@ -85,7 +87,7 @@ static void app_change_mode(void)
 		{
 			light_set_color_state(light_all, light_off);
   		light_set_color_state(light_green, light_on);
-			timer_start(15000, app_change_mode);
+			//timer_start(15000, app_change_mode);
 			trafic_light_mode = green_blink;
 			trafic_light_blink = 8;
 			break;
@@ -119,34 +121,3 @@ static void app_change_mode(void)
 		}
 	}
 }
-
-//		light_set_color_state(light_red, light_on);
-//		HAL_Delay(30000);
-//		
-//		light_set_color_state(light_yelow, light_on);
-//		HAL_Delay(3000);
-//		
-//		light_set_color_state(light_all, light_off);
-//		light_set_color_state(light_green, light_on);
-//		HAL_Delay(15000);
-//		
-//		light_set_color_state(light_green, light_off);
-//		HAL_Delay(500);
-//		light_set_color_state(light_green, light_on);
-//		HAL_Delay(500);
-//		light_set_color_state(light_green, light_off);
-//		HAL_Delay(500);
-//		light_set_color_state(light_green, light_on);
-//		HAL_Delay(500);
-//		light_set_color_state(light_green, light_off);
-//		HAL_Delay(500);
-//		light_set_color_state(light_green, light_on);
-//		HAL_Delay(500);
-//		light_set_color_state(light_green, light_off);
-//		HAL_Delay(500);
-//		light_set_color_state(light_green, light_on);
-//		HAL_Delay(500);
-//		light_set_color_state(light_green, light_off);
-//		
-//		light_set_color_state(light_yelow, light_on);
-//		HAL_Delay(3000);

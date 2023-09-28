@@ -2,6 +2,7 @@
 */MDK-ARM/*
 !*/MDK-ARM/*.uvprojx
 !*/MDK-ARM/*.s
+!*/MDK-ARM/DebugConfig/*.dbgconf
 
 
 # Temporary files
