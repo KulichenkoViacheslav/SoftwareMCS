@@ -15,8 +15,7 @@
 
 typedef enum
 {
-	yelow_blink = 0,
-	red,
+	red = 0,
 	red_yelow,
 	green,
 	green_blink,
@@ -25,7 +24,7 @@ typedef enum
 
 //Red - 30 s; Red + Yelow - 3 s; Green - 15 s; Green blink - 4 s; Yelow - 3 s; blink - 0.5/0.5 s
 
-static trafic_light_mode_e_t trafic_light_mode = yelow_blink;
+static trafic_light_mode_e_t trafic_light_mode = green;
 static uint8_t trafic_light_blink = 0;
 
 static void app_change_mode(void);
@@ -34,8 +33,7 @@ void app_init(void)
 {
 	timer_init();
 	light_init();
-	button_init(app_change_mode);
-	
+	button_init(app_change_mode);	
 	timer_start(500, app_change_mode);
 }	
 
@@ -44,30 +42,14 @@ void app_run(void)
 	trafic_light_mode = green;
 	while(1)
 	{
-
+		
 	}
 }
 
 static void app_change_mode(void)
 {
 	switch (trafic_light_mode)
-	{
-		case yelow_blink:
-		{
-			if  (trafic_light_blink == 0)
-			{
-				light_set_color_state(light_yelow, light_on);
-				timer_start(500, app_change_mode);
-				trafic_light_blink = 1;
-			}
-			else
-			{
-				light_set_color_state(light_yelow, light_off);
-				timer_start(500, app_change_mode);
-				trafic_light_blink = 0;
-			}
-			break;
-		}
+	{		
 		case red:
 		{
 			light_set_color_state(light_all, light_off);
@@ -84,10 +66,10 @@ static void app_change_mode(void)
 			break;
 		}
 		case green:
-		{
+		{			
 			light_set_color_state(light_all, light_off);
   		light_set_color_state(light_green, light_on);
-			//timer_start(15000, app_change_mode);
+			timer_start(30000, button_check);
 			trafic_light_mode = green_blink;
 			trafic_light_blink = 8;
 			break;
