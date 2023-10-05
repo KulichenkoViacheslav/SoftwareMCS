@@ -340,7 +340,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F407xx</Define>
               <Undefine></Undefine>
-              <IncludePath>../Core/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F4xx/Include;../Drivers/CMSIS/Include;..\App;..\Components\Light;..\Components\Timer;..\Components\Button</IncludePath>
+              <IncludePath>../Core/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F4xx/Include;../Drivers/CMSIS/Include;..\App;..\Components\Light;..\Components\Timer;..\Components\Button;..\OS</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -568,6 +568,21 @@
               <FileName>button.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Components\Button\button.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>OS/FlagMachine</GroupName>
+          <Files>
+            <File>
+              <FileName>flag_machine.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\OS\flag_machine.c</FilePath>
+            </File>
+            <File>
+              <FileName>flag_machine.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\OS\flag_machine.h</FilePath>
             </File>
           </Files>
         </Group>

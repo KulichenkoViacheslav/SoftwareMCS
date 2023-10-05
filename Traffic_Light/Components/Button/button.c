@@ -7,12 +7,11 @@ static button_pressed_cb button_pressed;
 static bool button_is_pressed = false;
 static bool button_is_enabled = true;
 
-void button_init(button_pressed_cb p_button_pressed_cb)
+void button_init(void)
 {
-	button_pressed = p_button_pressed_cb;
+	button_is_pressed = false;
+	button_is_enabled = true;
 }
-
-
 
 void HAL_GPIO_EXTI_Callback(uint16_t pin)
 {
