@@ -3,7 +3,7 @@
 
 typedef enum
 {
-	BUTTON_PRESSED = 0,
+	FLAG_BUTTON_PRESSED = 0,
 }fm_flags_e_t;
 
 void fm_init(void);

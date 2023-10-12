@@ -340,7 +340,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F407xx</Define>
               <Undefine></Undefine>
-              <IncludePath>../Core/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F4xx/Include;../Drivers/CMSIS/Include;..\App;..\Components\Light;..\Components\Timer;..\Components\Button;..\OS</IncludePath>
+              <IncludePath>../Core/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F4xx/Include;../Drivers/CMSIS/Include;../App;../Components/Light;../Components/Timer;../Components/Button;../OS;..\Components\Led_Diasplay</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -583,6 +583,31 @@
               <FileName>flag_machine.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\OS\flag_machine.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Components/Led_Display</GroupName>
+          <Files>
+            <File>
+              <FileName>led_display.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Components\Led_Diasplay\led_display.c</FilePath>
+            </File>
+            <File>
+              <FileName>led_display.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Components\Led_Diasplay\led_display.h</FilePath>
+            </File>
+            <File>
+              <FileName>led_display_auto.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Components\Led_Diasplay\led_display_auto.c</FilePath>
+            </File>
+            <File>
+              <FileName>led_display_auto.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Components\Led_Diasplay\led_display_auto.h</FilePath>
             </File>
           </Files>
         </Group>

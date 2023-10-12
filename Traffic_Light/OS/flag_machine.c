@@ -7,17 +7,15 @@ static uint32_t fm_core = 0;
 
 void fm_init(void)
 {
-	button_init();
 }
 
 void fm_run(void)
 {
-	if (fm_core & (1 << BUTTON_PRESSED))
+	if (fm_core & (1 << FLAG_BUTTON_PRESSED))
 	{
-		button_check();
-		fm_clear_flag(BUTTON_PRESSED);
+		fm_clear_flag(FLAG_BUTTON_PRESSED);
 	}
-	else if (fm_core & (1 << BUTTON_PRESSED)
+	if (fm_core & (1 << FLAG_BUTTON_PRESSED))
 	{
 		
 	}

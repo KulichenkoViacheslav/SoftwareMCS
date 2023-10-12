@@ -3,6 +3,8 @@
 #include "timer.h"
 #include "button.h"
 #include "stm32f4xx_hal.h"
+#include "flag_machine.h"
+#include "led_display_auto.h"
 
 // Variants
 /*
@@ -26,6 +28,7 @@ typedef enum
 
 static trafic_light_mode_e_t trafic_light_mode = green;
 static uint8_t trafic_light_blink = 0;
+led_display_s_t auto_led_display;
 
 static void app_change_mode(void);
 
@@ -33,8 +36,11 @@ void app_init(void)
 {
 	timer_init();
 	light_init();
-	button_init(app_change_mode);	
-	timer_start(500, app_change_mode);
+	led_display_auto_init(&auto_led_display, );
+//	button_init(app_change_mode);	
+//	timer_start(500, app_change_mode);
+	light_set_color_state(auto_trafic_light, light_all, light_off);
+	light_set_color_state(pedestrian_trafic_light, light_all, light_off);
 }	
 
 void app_run(void)
@@ -52,24 +58,23 @@ static void app_change_mode(void)
 	{		
 		case red:
 		{
-			light_set_color_state(light_all, light_off);
-			light_set_color_state(light_red, light_on);
+			light_set_color_state(auto_trafic_light, light_all, light_off);
+			light_set_color_state(auto_trafic_light, light_red, light_on);
 			timer_start(30000, app_change_mode);
 			trafic_light_mode = red_yelow;
 			break;
 		}
 		case red_yelow:
 		{
-			light_set_color_state(light_yelow, light_on);
+			light_set_color_state(auto_trafic_light, light_yelow, light_on);
 			timer_start(3000, app_change_mode);
 			trafic_light_mode = green;
 			break;
 		}
 		case green:
 		{			
-			light_set_color_state(light_all, light_off);
-  		light_set_color_state(light_green, light_on);
-			timer_start(30000, button_check);
+			light_set_color_state(auto_trafic_light, light_all, light_off);
+			light_set_color_state(auto_trafic_light, light_green, light_on);
 			trafic_light_mode = green_blink;
 			trafic_light_blink = 8;
 			break;
@@ -78,12 +83,12 @@ static void app_change_mode(void)
 		{
 			if ((trafic_light_blink % 2) == 0)
 			{
-				light_set_color_state(light_green, light_off);
+				light_set_color_state(auto_trafic_light, light_green, light_off);
 				timer_start(500, app_change_mode);
 			}
 			else
 			{
-				light_set_color_state(light_green, light_on);
+				light_set_color_state(auto_trafic_light, light_green, light_on);
 				timer_start(500, app_change_mode);
 			}
 			trafic_light_blink --;
@@ -95,8 +100,8 @@ static void app_change_mode(void)
 		}
 		case yelow:
 		{
-			light_set_color_state(light_green, light_off);
-			light_set_color_state(light_yelow, light_on);
+			light_set_color_state(auto_trafic_light, light_green, light_off);
+			light_set_color_state(auto_trafic_light, light_yelow, light_on);
 			timer_start(3000, app_change_mode);
 			trafic_light_mode = red;
 			break;
