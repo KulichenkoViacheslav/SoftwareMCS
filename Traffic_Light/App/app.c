@@ -28,7 +28,6 @@ typedef enum
 
 static trafic_light_mode_e_t trafic_light_mode = green;
 static uint8_t trafic_light_blink = 0;
-led_display_s_t auto_led_display;
 
 static void app_change_mode(void);
 
@@ -36,16 +35,16 @@ void app_init(void)
 {
 	timer_init();
 	light_init();
-	led_display_auto_init(&auto_led_display, );
+	led_display_auto_init();
 //	button_init(app_change_mode);	
 //	timer_start(500, app_change_mode);
-	light_set_color_state(auto_trafic_light, light_all, light_off);
-	light_set_color_state(pedestrian_trafic_light, light_all, light_off);
+//	light_set_color_state(auto_trafic_light, light_all, light_on);
+//	light_set_color_state(pedestrian_trafic_light, light_all, light_on);
 }	
 
 void app_run(void)
 {
-	trafic_light_mode = green;
+//	trafic_light_mode = green;
 	while(1)
 	{
 		

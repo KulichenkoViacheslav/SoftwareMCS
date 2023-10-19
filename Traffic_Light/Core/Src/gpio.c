@@ -53,14 +53,14 @@ void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(MY_HEAD_GPIO_Port, MY_HEAD_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOE, PEDESTRIAN_SOUND_Pin|PEDESTRIAN_GREEN_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(PEDESTRIAN_SOUND_GPIO_Port, PEDESTRIAN_SOUND_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOE, PEDESTRIAN_RED_Pin|AUTO_TIME_CLK_Pin|AUTO_TIME_DATA_Pin|PEDESTRIAN_TIME_CLK_Pin
-                          |PEDESTRIAN_TIME_DATA_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOE, AUTO_TIME_CLK_Pin|AUTO_TIME_DATA_Pin|PEDESTRIAN_TIME_CLK_Pin|PEDESTRIAN_TIME_DATA_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOD, AUTO_GREEN_Pin|AUTO_YELOW_Pin|AUTO_RED_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GPIOD, PEDESTRIAN_GREEN_Pin|PEDESTRIAN_RED_Pin|AUTO_GREEN_Pin|AUTO_YELOW_Pin
+                          |AUTO_RED_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin : PtPin */
   GPIO_InitStruct.Pin = BUTTON_Pin;
@@ -82,18 +82,18 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(PEDESTRIAN_SOUND_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : PEPin PEPin PEPin PEPin
-                           PEPin PEPin */
-  GPIO_InitStruct.Pin = PEDESTRIAN_RED_Pin|PEDESTRIAN_GREEN_Pin|AUTO_TIME_CLK_Pin|AUTO_TIME_DATA_Pin
-                          |PEDESTRIAN_TIME_CLK_Pin|PEDESTRIAN_TIME_DATA_Pin;
+  /*Configure GPIO pins : PEPin PEPin PEPin PEPin */
+  GPIO_InitStruct.Pin = AUTO_TIME_CLK_Pin|AUTO_TIME_DATA_Pin|PEDESTRIAN_TIME_CLK_Pin|PEDESTRIAN_TIME_DATA_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : PDPin PDPin PDPin */
-  GPIO_InitStruct.Pin = AUTO_GREEN_Pin|AUTO_YELOW_Pin|AUTO_RED_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  /*Configure GPIO pins : PDPin PDPin PDPin PDPin
+                           PDPin */
+  GPIO_InitStruct.Pin = PEDESTRIAN_GREEN_Pin|PEDESTRIAN_RED_Pin|AUTO_GREEN_Pin|AUTO_YELOW_Pin
+                          |AUTO_RED_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_OD;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
