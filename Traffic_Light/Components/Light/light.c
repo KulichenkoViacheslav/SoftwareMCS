@@ -11,8 +11,18 @@ typedef struct
 	uint8_t green;
 }light_brightness_s_t;
 
+typedef struct
+{
+	light_state_e_t red_auto;
+	light_state_e_t yelow_auto;
+	light_state_e_t green_auto;
+	light_state_e_t red_pedestrian;
+	light_state_e_t green_pedestrian;
+}light_state_s_t;
+
 static light_brightness_s_t light_brightness;
 static timer_pwm_s_t timer_light_brightness;
+static light_state_s_t light_state;
 
 void light_pwm_update(void);
 void light_pwm_red(void);
@@ -54,16 +64,19 @@ void light_set_color_state(trafic_light_e_t type_trafic_light, light_color_e_t c
 				case light_red:
 				{
 					HAL_GPIO_WritePin(AUTO_RED_GPIO_Port, AUTO_RED_Pin, (GPIO_PinState)state);
+					light_state.red_auto = state;
 					break;
 				}
 				case light_yelow:
 				{
 					HAL_GPIO_WritePin(AUTO_YELOW_GPIO_Port, AUTO_YELOW_Pin, (GPIO_PinState)state);
+					light_state.yelow_auto = state;
 					break;
 				}
 				case light_green:
 				{
 					HAL_GPIO_WritePin(AUTO_GREEN_GPIO_Port, AUTO_GREEN_Pin, (GPIO_PinState)state);
+					light_state.green_auto = state;
 					break;
 				}
 				case light_all:
@@ -71,6 +84,9 @@ void light_set_color_state(trafic_light_e_t type_trafic_light, light_color_e_t c
 					HAL_GPIO_WritePin(AUTO_RED_GPIO_Port, AUTO_RED_Pin, (GPIO_PinState)state);
 					HAL_GPIO_WritePin(AUTO_YELOW_GPIO_Port, AUTO_YELOW_Pin, (GPIO_PinState)state);
 					HAL_GPIO_WritePin(AUTO_GREEN_GPIO_Port, AUTO_GREEN_Pin, (GPIO_PinState)state);
+					light_state.red_auto = state;
+					light_state.yelow_auto = state;
+					light_state.green_auto = state;
 					break;
 				}
 				default:
@@ -78,6 +94,9 @@ void light_set_color_state(trafic_light_e_t type_trafic_light, light_color_e_t c
 					HAL_GPIO_WritePin(AUTO_RED_GPIO_Port, AUTO_RED_Pin, GPIO_PIN_SET);
 					HAL_GPIO_WritePin(AUTO_YELOW_GPIO_Port, AUTO_YELOW_Pin, GPIO_PIN_SET);
 					HAL_GPIO_WritePin(AUTO_GREEN_GPIO_Port, AUTO_GREEN_Pin, GPIO_PIN_SET);
+					light_state.red_auto = light_off;
+					light_state.yelow_auto = light_off;
+					light_state.green_auto = light_off;
 					break;
 				}
 			}
@@ -90,23 +109,29 @@ void light_set_color_state(trafic_light_e_t type_trafic_light, light_color_e_t c
 				case light_red:
 				{
 					HAL_GPIO_WritePin(PEDESTRIAN_RED_GPIO_Port, PEDESTRIAN_RED_Pin, (GPIO_PinState)state);
+					light_state.red_pedestrian = state;
 					break;
 				}
 				case light_green:
 				{
 					HAL_GPIO_WritePin(PEDESTRIAN_GREEN_GPIO_Port, PEDESTRIAN_GREEN_Pin, (GPIO_PinState)state);
+					light_state.green_pedestrian = state;
 					break;
 				}
 				case light_all:
 				{
 					HAL_GPIO_WritePin(PEDESTRIAN_RED_GPIO_Port, PEDESTRIAN_RED_Pin, (GPIO_PinState)state);
 					HAL_GPIO_WritePin(PEDESTRIAN_GREEN_GPIO_Port, PEDESTRIAN_GREEN_Pin, (GPIO_PinState)state);
+					light_state.red_pedestrian = state;
+					light_state.green_pedestrian = state;
 					break;
 				}
 				default:
 				{
 					HAL_GPIO_WritePin(PEDESTRIAN_RED_GPIO_Port, PEDESTRIAN_RED_Pin, GPIO_PIN_SET);
 					HAL_GPIO_WritePin(PEDESTRIAN_GREEN_GPIO_Port, PEDESTRIAN_GREEN_Pin, GPIO_PIN_SET);
+					light_state.red_pedestrian = light_off;
+					light_state.green_pedestrian = light_off;
 					break;
 				}
 			}
@@ -118,15 +143,22 @@ void light_set_color_state(trafic_light_e_t type_trafic_light, light_color_e_t c
 			HAL_GPIO_WritePin(AUTO_RED_GPIO_Port, AUTO_RED_Pin, GPIO_PIN_SET);
 			HAL_GPIO_WritePin(AUTO_YELOW_GPIO_Port, AUTO_YELOW_Pin, GPIO_PIN_SET);
 			HAL_GPIO_WritePin(AUTO_GREEN_GPIO_Port, AUTO_GREEN_Pin, GPIO_PIN_SET);
+			light_state.red_auto = light_off;
+			light_state.yelow_auto = light_off;
+			light_state.green_auto = light_off;
 
 			/* FOR PEDESTRIAN */
 			HAL_GPIO_WritePin(PEDESTRIAN_RED_GPIO_Port, PEDESTRIAN_RED_Pin, GPIO_PIN_SET);
 			HAL_GPIO_WritePin(PEDESTRIAN_GREEN_GPIO_Port, PEDESTRIAN_GREEN_Pin, GPIO_PIN_SET);
+			light_state.red_pedestrian = light_off;
+			light_state.green_pedestrian = light_off;
 			break;
 		}
 	}
 }
 
+/* Regulation PWM */
+//-----------------------------------------------------------------------------
 void light_pwm_update(void)
 {
 	light_set_color_state(auto_trafic_light, light_all, light_on);
@@ -148,3 +180,4 @@ void light_pwm_green(void)
 	light_set_color_state(auto_trafic_light, light_green, light_off);
 	light_set_color_state(pedestrian_trafic_light, light_green, light_off);
 }
+//-----------------------------------------------------------------------------
