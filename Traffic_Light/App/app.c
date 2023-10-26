@@ -54,6 +54,10 @@ void app_run(void)
 		{
 			fm_clear_flag(FLAG_BUTTON_PRESSED);
 		}
+		if (fm_is_flag_set(FLAG_BUTTON_CHECK))
+		{
+			
+		}
 		if (fm_is_flag_set(FLAG_YELOW_BLINK))
 		{
 			app_yelow_blink();
@@ -99,6 +103,8 @@ void app_change_mode(void)
 		{			
 			light_set_color_state(auto_trafic_light, light_all, light_off);
 			light_set_color_state(auto_trafic_light, light_green, light_on);
+			fm_set_flag(FLAG_BUTTON_CHECK);
+			/* Next step parameters */
 			trafic_light_mode = green_blink;
 			trafic_light_blink = 8;
 			break;
