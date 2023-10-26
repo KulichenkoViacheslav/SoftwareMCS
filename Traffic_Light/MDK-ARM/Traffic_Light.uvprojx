@@ -340,7 +340,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F407xx</Define>
               <Undefine></Undefine>
-              <IncludePath>../Core/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F4xx/Include;../Drivers/CMSIS/Include;../App;../Components/Light;../Components/Timer;../Components/Button;../OS;../Components/Led_Diasplay</IncludePath>
+              <IncludePath>../Core/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F4xx/Include;../Drivers/CMSIS/Include;../App;../Components/Light;../Components/Timer;../Components/Button;../OS;../Components/Led_Diasplay;../Components/Buzeer</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -608,6 +608,21 @@
               <FileName>led_display_auto.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Components\Led_Diasplay\led_display_auto.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Components/Buzzer</GroupName>
+          <Files>
+            <File>
+              <FileName>buzeer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Components\Buzeer\buzeer.c</FilePath>
+            </File>
+            <File>
+              <FileName>buzzer.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Components\Buzeer\buzzer.h</FilePath>
             </File>
           </Files>
         </Group>

@@ -93,7 +93,7 @@ void MX_GPIO_Init(void)
                            PDPin */
   GPIO_InitStruct.Pin = PEDESTRIAN_GREEN_Pin|PEDESTRIAN_RED_Pin|AUTO_GREEN_Pin|AUTO_YELOW_Pin
                           |AUTO_RED_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_OD;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);

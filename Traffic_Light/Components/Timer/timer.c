@@ -2,121 +2,88 @@
 #include "tim.h"
 #include <string.h>
 
+#define TIMERES_CONFIG_NUMBER 5
+
 static timer_cb timeout_ring;
-
-#define TIMERES_PWM_CONFIG_NUMBER 5
-
-static timer_pwm_s_t timer_pwm_context[TIMERES_PWM_CONFIG_NUMBER];
+static uint32_t tim_channels[TIMER_CHANNELS_MAX] = {TIM_CHANNEL_1, TIM_CHANNEL_2, TIM_CHANNEL_3, TIM_CHANNEL_4};
+static uint32_t tim_active_channels[TIMER_CHANNELS_MAX] = {HAL_TIM_ACTIVE_CHANNEL_1, HAL_TIM_ACTIVE_CHANNEL_2, \
+														   HAL_TIM_ACTIVE_CHANNEL_3, HAL_TIM_ACTIVE_CHANNEL_4};
+static timer_s_t timer_context[TIMERES_CONFIG_NUMBER];
 
 void timer_init(void)
 {
-	memset(&timer_pwm_context, 0, TIMERES_PWM_CONFIG_NUMBER * sizeof(timer_pwm_s_t));
+	memset(&timer_context, 0, TIMERES_CONFIG_NUMBER * sizeof(timer_s_t));
 }
 
-void timer_pwm_init(timer_pwm_s_t * timer_pwm)
+void timer_set_config(timer_s_t * timer)
 {
-	for (uint8_t i = 0; i < TIMERES_PWM_CONFIG_NUMBER; i ++)
+	for (uint8_t i = 0; i < TIMERES_CONFIG_NUMBER; i ++)
 	{
-		if (timer_pwm->id == TIMER_PWM_5)
+		if (timer_context[i].id == TIMER_NONE)
 		{
-			timer_pwm->htim = (uint32_t)&htim5;
-			memcpy(&timer_pwm_context[i], timer_pwm, sizeof(timer_pwm_s_t));
-			timer_pwm_update(timer_pwm);
-			break;
+			if (timer->id == TIMER_5)
+			{
+				timer->htim = (uint32_t)&htim5;
+				memcpy(&timer_context[i], timer, sizeof(timer_s_t));
+				timer_update(timer);
+				break;
+			}
+			if (timer->id == TIMER_6)
+			{
+				timer->htim = (uint32_t)&htim6;
+				memcpy(&timer_context[i], timer, sizeof(timer_s_t));
+				timer_update(timer);
+				break;
+			}
 		}
 	}
 }
 
-void timer_pwm_update(timer_pwm_s_t * timer_pwm)
+void timer_update(timer_s_t * timer)
 {
-	__HAL_TIM_SET_AUTORELOAD((TIM_HandleTypeDef *)timer_pwm->htim, timer_pwm->period);
-	__HAL_TIM_SET_COMPARE((TIM_HandleTypeDef *)timer_pwm->htim, TIM_CHANNEL_1, timer_pwm->channel_1);
-	__HAL_TIM_SET_COMPARE((TIM_HandleTypeDef *)timer_pwm->htim, TIM_CHANNEL_2, timer_pwm->channel_2);
-	__HAL_TIM_SET_COMPARE((TIM_HandleTypeDef *)timer_pwm->htim, TIM_CHANNEL_3, timer_pwm->channel_3);
-	__HAL_TIM_SET_COMPARE((TIM_HandleTypeDef *)timer_pwm->htim, TIM_CHANNEL_4, timer_pwm->channel_4);
-}
-
-void timer_pwm_start(timer_pwm_s_t * timer_pwm)
-{
-	HAL_TIM_Base_Start_IT((TIM_HandleTypeDef *)timer_pwm->htim);
-	if (timer_pwm->channel_1_cb != NULL)
+	__HAL_TIM_SET_AUTORELOAD((TIM_HandleTypeDef *)timer->htim, timer->period);
+	for (uint8_t i = 0; i < TIMER_CHANNELS_MAX; i ++)
 	{
-		HAL_TIM_PWM_Start_IT((TIM_HandleTypeDef *)timer_pwm->htim, TIM_CHANNEL_1);
-	}
-	if (timer_pwm->channel_2_cb != NULL)
-	{
-		HAL_TIM_PWM_Start_IT((TIM_HandleTypeDef *)timer_pwm->htim, TIM_CHANNEL_2);
-	}
-	if (timer_pwm->channel_3_cb != NULL)
-	{
-		HAL_TIM_PWM_Start_IT((TIM_HandleTypeDef *)timer_pwm->htim, TIM_CHANNEL_3);
-	}
-	if (timer_pwm->channel_4_cb != NULL)
-	{
-		HAL_TIM_PWM_Start_IT((TIM_HandleTypeDef *)timer_pwm->htim, TIM_CHANNEL_4);
+		if (timer->channel_cb[i] != NULL)
+		{
+			__HAL_TIM_SET_COMPARE((TIM_HandleTypeDef *)timer->htim, tim_channels[i], timer->channel_var[i]);
+		}
 	}
 }
 
-void timer_pwm_stop(const timer_pwm_s_t * timer_pwm)
+void timer_start(timer_s_t * timer)
 {
-	if (timer_pwm->channel_1_cb != NULL)
+	HAL_TIM_Base_Start_IT((TIM_HandleTypeDef *)timer->htim);
+	for (uint8_t i = 0; i < TIMER_CHANNELS_MAX; i ++)
 	{
-		HAL_TIM_PWM_Stop_IT((TIM_HandleTypeDef *)timer_pwm->htim, TIM_CHANNEL_1);
-	}
-	if (timer_pwm->channel_2_cb != NULL)
-	{
-		HAL_TIM_PWM_Stop_IT((TIM_HandleTypeDef *)timer_pwm->htim, TIM_CHANNEL_2);
-	}
-	if (timer_pwm->channel_3_cb != NULL)
-	{
-		HAL_TIM_PWM_Stop_IT((TIM_HandleTypeDef *)timer_pwm->htim, TIM_CHANNEL_3);
-	}
-	if (timer_pwm->channel_4_cb != NULL)
-	{
-		HAL_TIM_PWM_Stop_IT((TIM_HandleTypeDef *)timer_pwm->htim, TIM_CHANNEL_4);
+		if (timer->channel_cb[i] != NULL)
+		{
+			HAL_TIM_PWM_Start_IT((TIM_HandleTypeDef *)timer->htim, tim_channels[i]);
+		}
 	}
 }
 
-bool timer_start(uint16_t time, timer_cb p_timeout_cb)
+void timer_stop(timer_s_t * timer)
 {
-	bool status = true;
-	if ((time > 0) && (p_timeout_cb != NULL))
+	HAL_TIM_Base_Stop_IT((TIM_HandleTypeDef *)timer->htim);
+	for (uint8_t i = 0; i < TIMER_CHANNELS_MAX; i ++)
 	{
-		HAL_TIM_Base_Stop_IT(&htim6);
-		__HAL_TIM_SET_AUTORELOAD(&htim6, time);
-		__HAL_TIM_SET_COUNTER(&htim6, 0);
-		__HAL_TIM_CLEAR_FLAG(&htim6, TIM_FLAG_UPDATE);
-		HAL_TIM_Base_Start_IT(&htim6);
-		timeout_ring = p_timeout_cb;
+		if (timer->channel_cb[i] != NULL)
+		{
+			HAL_TIM_PWM_Stop_IT((TIM_HandleTypeDef *)timer->htim, tim_channels[i]);
+		}
 	}
-	else
-	{
-		HAL_TIM_Base_Stop_IT(&htim6);
-		status = false;
-	}
-	
-	return status;
-}
-
-void timer_stop(void)
-{
-	HAL_TIM_Base_Stop_IT(&htim6);
 }
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-	if (htim == &htim6)
+	for (uint8_t i = 0; i < TIMERES_CONFIG_NUMBER; i ++)
 	{
-		HAL_TIM_Base_Stop_IT(&htim6);
-		timeout_ring();
-	}
-	for (uint8_t i = 0; i < TIMERES_PWM_CONFIG_NUMBER; i ++)
-	{
-		if (htim == (TIM_HandleTypeDef *)timer_pwm_context[i].htim)
+		if (htim == (TIM_HandleTypeDef *)timer_context[i].htim)
 		{
-			if (timer_pwm_context[i].update_cb != NULL)
+			if (timer_context[i].update_cb != NULL)
 			{
-				timer_pwm_context[i].update_cb();
+				timer_context[i].update_cb();
 			}
 		}
 	}
@@ -124,38 +91,24 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
 void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim)
 {
-	for (uint8_t i = 0; i < TIMERES_PWM_CONFIG_NUMBER; i ++)
+	for (uint8_t i = 0; i < TIMERES_CONFIG_NUMBER; i ++)
 	{
-		if (htim == (TIM_HandleTypeDef *)timer_pwm_context[i].htim)
+		if (htim == (TIM_HandleTypeDef *)timer_context[i].htim)
 		{
-			if (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_1)
+			for (uint8_t index = 0; index < TIMER_CHANNELS_MAX; index ++)
 			{
-				if (timer_pwm_context[i].channel_1_cb != NULL)
+				if (htim->Channel == tim_active_channels[index])
 				{
-					timer_pwm_context[i].channel_1_cb();
-				}
-			}
-			if (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_2)
-			{
-				if (timer_pwm_context[i].channel_2_cb != NULL)
-				{
-					timer_pwm_context[i].channel_2_cb();
-				}
-			}
-			if (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_3)
-			{
-				if (timer_pwm_context[i].channel_3_cb != NULL)
-				{
-					timer_pwm_context[i].channel_3_cb();
-				}
-			}
-			if (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_4)
-			{
-				if (timer_pwm_context[i].channel_4_cb != NULL)
-				{
-					timer_pwm_context[i].channel_4_cb();
+					if (timer_context[i].channel_cb[index] != NULL)
+					{
+						timer_context[i].channel_cb[index]();
+					}
 				}
 			}
 		}
 	}
+}
+
+void timer_empty_cb(void)
+{
 }

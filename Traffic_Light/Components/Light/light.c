@@ -21,7 +21,7 @@ typedef struct
 }light_state_s_t;
 
 static light_brightness_s_t light_brightness;
-static timer_pwm_s_t timer_light_brightness;
+static timer_s_t timer_light_brightness;
 static light_state_s_t light_state;
 
 void light_pwm_update(void);
@@ -34,23 +34,24 @@ void light_init(void)
 {
 	light_set_color_state(auto_trafic_light, light_all, light_off);
 	light_set_color_state(pedestrian_trafic_light, light_all, light_off);
+	light_set_color_state(pedestrian_trafic_light, light_green, light_on);
 	light_brightness.red = 50;
 	light_brightness.green = 5;
 	light_brightness.yelow = 5;
 	
-	timer_light_brightness.id 		 = TIMER_PWM_5;
-	timer_light_brightness.period    = 100;
-	timer_light_brightness.channel_1 = light_brightness.red;
-	timer_light_brightness.channel_2 = light_brightness.yelow;
-	timer_light_brightness.channel_3 = light_brightness.green;
+	timer_light_brightness.id 		      = TIMER_5;
+	timer_light_brightness.period         = 100;
+	timer_light_brightness.channel_var[0] = light_brightness.red;
+	timer_light_brightness.channel_var[1] = light_brightness.yelow;
+	timer_light_brightness.channel_var[2] = light_brightness.green;
 	
-	timer_light_brightness.update_cb    = light_pwm_update;
-	timer_light_brightness.channel_1_cb = light_pwm_red;
-	timer_light_brightness.channel_2_cb = light_pwm_yelow;
-	timer_light_brightness.channel_3_cb = light_pwm_green;
+	timer_light_brightness.update_cb     = light_pwm_update;
+	timer_light_brightness.channel_cb[0] = light_pwm_red;
+	timer_light_brightness.channel_cb[1] = light_pwm_yelow;
+	timer_light_brightness.channel_cb[2] = light_pwm_green;
 	
-	timer_pwm_init(&timer_light_brightness);
-	timer_pwm_start(&timer_light_brightness);
+	timer_set_config(&timer_light_brightness);
+	timer_start(&timer_light_brightness);
 }	
 
 void light_set_color_state(trafic_light_e_t type_trafic_light, light_color_e_t color, light_state_e_t state)
@@ -161,23 +162,46 @@ void light_set_color_state(trafic_light_e_t type_trafic_light, light_color_e_t c
 //-----------------------------------------------------------------------------
 void light_pwm_update(void)
 {
-	light_set_color_state(auto_trafic_light, light_all, light_on);
-	light_set_color_state(pedestrian_trafic_light, light_all, light_on);
+	if (light_state.red_auto == light_on)
+	{
+		HAL_GPIO_WritePin(AUTO_RED_GPIO_Port, AUTO_RED_Pin, GPIO_PIN_SET);
+	}
+	if (light_state.yelow_auto == light_on)
+	{
+		HAL_GPIO_WritePin(AUTO_YELOW_GPIO_Port, AUTO_YELOW_Pin, GPIO_PIN_RESET);
+	}
+	if (light_state.green_auto == light_on)
+	{
+		 HAL_GPIO_WritePin(AUTO_GREEN_GPIO_Port, AUTO_GREEN_Pin, GPIO_PIN_RESET);
+	}
+	if (light_state.red_pedestrian == light_on)
+	{
+		HAL_GPIO_WritePin(PEDESTRIAN_RED_GPIO_Port, PEDESTRIAN_RED_Pin, GPIO_PIN_RESET);
+	}
+	if (light_state.green_pedestrian == light_on)
+	{
+		HAL_GPIO_WritePin(PEDESTRIAN_GREEN_GPIO_Port, PEDESTRIAN_GREEN_Pin, GPIO_PIN_RESET);
+	}
 }
 
 void light_pwm_red(void)
 {
-	light_set_color_state(auto_trafic_light, light_red, light_off);
-	light_set_color_state(pedestrian_trafic_light, light_red, light_off);
+    HAL_GPIO_WritePin(AUTO_RED_GPIO_Port, AUTO_RED_Pin, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(PEDESTRIAN_RED_GPIO_Port, PEDESTRIAN_RED_Pin, GPIO_PIN_SET);
 }
 
 void light_pwm_yelow(void)
 {
-	light_set_color_state(auto_trafic_light, light_yelow, light_off);
+	HAL_GPIO_WritePin(AUTO_YELOW_GPIO_Port, AUTO_YELOW_Pin, GPIO_PIN_SET);
 }
+
 void light_pwm_green(void)
 {
-	light_set_color_state(auto_trafic_light, light_green, light_off);
-	light_set_color_state(pedestrian_trafic_light, light_green, light_off);
+	HAL_GPIO_WritePin(AUTO_GREEN_GPIO_Port, AUTO_GREEN_Pin, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(PEDESTRIAN_GREEN_GPIO_Port, PEDESTRIAN_GREEN_Pin, GPIO_PIN_SET);
 }
 //-----------------------------------------------------------------------------
+
+
+					
+					
