@@ -63,6 +63,22 @@ void fm_set_flag_with_delay(fm_flags_e_t flag, uint32_t time)
 	}
 }
 
+void fm_clear_flag_with_delay(fm_flags_e_t flag)
+{
+	for (uint8_t i = 0; i < FLAG_DELAY_CONTEXT_SIZE; i ++)
+	{
+		if (fm_flag_delay_context[i].flag == flag)
+		{
+			fm_flag_delay_context[i].state = off;
+			fm_flag_delay_context[i].time = 0;
+			fm_flag_delay_context[i].flag = 0;
+			
+			fm_clear_flag(flag);
+			break;
+		}
+	}
+}
+
 void fm_timer_delay(void)
 {
 	for (uint8_t i = 0; i < FLAG_DELAY_CONTEXT_SIZE; i ++)

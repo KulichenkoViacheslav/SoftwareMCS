@@ -17,6 +17,13 @@
 
 typedef enum
 {
+	disable = 0,
+	enable,
+	waiting,
+}trafic_light_state_e_t;
+
+typedef enum
+{
 	red = 0,
 	red_yelow,
 	green,
@@ -27,6 +34,7 @@ typedef enum
 //Red - 30 s; Red + Yelow - 3 s; Green - 15 s; Green blink - 4 s; Yelow - 3 s; blink - 0.5/0.5 s
 
 static trafic_light_mode_e_t trafic_light_mode = red;
+static trafic_light_state_e_t trafic_light_state = disable;
 static uint8_t trafic_light_blink = 0;
 static bool blinker_switch = false;
 
@@ -43,7 +51,9 @@ void app_init(void)
 	light_set_color_state(auto_trafic_light, light_all, light_off);
 	light_set_color_state(pedestrian_trafic_light, light_all, light_off);
 	
-	fm_set_flag_with_delay(FLAG_YELOW_BLINK, 500);
+	trafic_light_state = disable;
+	/* Need activate from RTC */
+	fm_set_flag_with_delay(FLAG_TRAFIC_LIGHT_WAITING, 6000);	
 }	
 
 void app_run(void)
@@ -52,16 +62,52 @@ void app_run(void)
 	{
 		if (fm_is_flag_set(FLAG_BUTTON_PRESSED))
 		{
-			fm_clear_flag(FLAG_BUTTON_PRESSED);
+			if (!fm_is_flag_set(FLAG_BUTTON_LOCK))
+			{
+				fm_set_flag(FLAG_CHANGE_MODE);
+				fm_clear_flag(FLAG_BUTTON_PRESSED);
+				fm_set_flag(FLAG_BUTTON_LOCK);
+			}
 		}
 		if (fm_is_flag_set(FLAG_BUTTON_CHECK))
 		{
+			button_check();
+			fm_clear_flag(FLAG_BUTTON_CHECK);
+			fm_set_flag_with_delay(FLAG_BUTTON_CHECK, BUTTON_TIMEOUT_CHECK);
+		}
+		if (fm_is_flag_set(FLAG_BUTTON_UNLOCK))
+		{
+			fm_clear_flag(FLAG_BUTTON_LOCK);
+			fm_clear_flag(FLAG_BUTTON_UNLOCK);
+		}
+		if (fm_is_flag_set(FLAG_TRAFIC_LIGHT_WAITING))
+		{
+			trafic_light_state = waiting;
+			fm_set_flag(FLAG_YELOW_BLINK);
+			/* Need activate from RTC */
+			fm_set_flag_with_delay(FLAG_TRAFIC_LIGHT_ENABLE, 6000);
 			
+			fm_clear_flag(FLAG_TRAFIC_LIGHT_WAITING);
+		}
+		if (fm_is_flag_set(FLAG_TRAFIC_LIGHT_ENABLE))
+		{
+			trafic_light_state = enable;
+			fm_clear_flag_with_delay(FLAG_YELOW_BLINK);
+			trafic_light_mode = green;
+			fm_set_flag(FLAG_CHANGE_MODE);
+			
+			fm_clear_flag(FLAG_TRAFIC_LIGHT_ENABLE);
 		}
 		if (fm_is_flag_set(FLAG_YELOW_BLINK))
 		{
 			app_yelow_blink();
 			fm_clear_flag(FLAG_YELOW_BLINK);
+			fm_set_flag_with_delay(FLAG_YELOW_BLINK, 500);
+		}
+		if (fm_is_flag_set(FLAG_CHANGE_MODE))
+		{
+			app_change_mode();
+			fm_clear_flag(FLAG_CHANGE_MODE);
 		}
 	}
 }
@@ -79,7 +125,6 @@ static void app_yelow_blink(void)
 		light_set_color_state(auto_trafic_light, light_yelow, light_off);
 		blinker_switch = true;
 	}
-	fm_set_flag_with_delay(FLAG_YELOW_BLINK, 500);
 }
 
 void app_change_mode(void)
@@ -90,20 +135,26 @@ void app_change_mode(void)
 		{
 			light_set_color_state(auto_trafic_light, light_all, light_off);
 			light_set_color_state(auto_trafic_light, light_red, light_on);
+			/* Next step parameters */
 			trafic_light_mode = red_yelow;
+			fm_set_flag_with_delay(FLAG_CHANGE_MODE, 30000);
 			break;
 		}
 		case red_yelow:
 		{
 			light_set_color_state(auto_trafic_light, light_yelow, light_on);
+			/* Next step parameters */
 			trafic_light_mode = green;
+			fm_set_flag_with_delay(FLAG_CHANGE_MODE, 3000);
 			break;
 		}
+		/* Start cycle */
 		case green:
 		{			
 			light_set_color_state(auto_trafic_light, light_all, light_off);
 			light_set_color_state(auto_trafic_light, light_green, light_on);
 			fm_set_flag(FLAG_BUTTON_CHECK);
+			fm_set_flag_with_delay(FLAG_BUTTON_UNLOCK, 40000);
 			/* Next step parameters */
 			trafic_light_mode = green_blink;
 			trafic_light_blink = 8;
@@ -122,7 +173,13 @@ void app_change_mode(void)
 			trafic_light_blink --;
 			if (trafic_light_blink == 0)
 			{
+				/* Next step parameters */
 				trafic_light_mode = yelow;
+				fm_set_flag(FLAG_CHANGE_MODE);
+			}
+			else
+			{
+				fm_set_flag_with_delay(FLAG_CHANGE_MODE, 500);
 			}
 			break;
 		}
@@ -130,7 +187,9 @@ void app_change_mode(void)
 		{
 			light_set_color_state(auto_trafic_light, light_green, light_off);
 			light_set_color_state(auto_trafic_light, light_yelow, light_on);
+			/* Next step parameters */
 			trafic_light_mode = red;
+			fm_set_flag_with_delay(FLAG_CHANGE_MODE, 3000);
 			break;
 		}
 	}
