@@ -16,9 +16,9 @@
 */
 
 typedef enum {
-    pedestrian_red,
+    pedestrian_red = 0,
     pedestrian_green,
-    pedestrian_flash,
+    pedestrian_blink,
 }pedestrian_trafic_light_mode_e_t;
 
 typedef enum
@@ -41,7 +41,9 @@ typedef enum
 
 static trafic_light_mode_e_t trafic_light_mode = red;
 static trafic_light_state_e_t trafic_light_state = disable;
+static pedestrian_trafic_light_mode_e_t pedestrian_trafic_light_mode = pedestrian_red;
 static uint8_t trafic_light_blink = 0;
+static uint8_t pedestrian_blink_count = 0;
 static bool blinker_switch = false;
 
 static void app_change_mode(void);
@@ -197,49 +199,51 @@ void app_change_mode(void)
 			trafic_light_mode = red;
 			fm_set_flag_with_delay(FLAG_CHANGE_MODE, 3000);
 			break;
-		}	
-		
+		}			
+	}
+}
+void pedestrian_traffic_light_change_mode(void)
+{
 	switch (pedestrian_trafic_light_mode)
     {
-        case pedestrian_red:
+			case pedestrian_red:
         {            
             light_set_color_state(pedestrian_trafic_light, light_red, light_on);           
             fm_set_flag_with_delay(FLAG_CHANGE_MODE, 3000);            
             pedestrian_trafic_light_mode = pedestrian_green;
             break;
         }
-        case pedestrian_green:
+       case pedestrian_green:
         {
             light_set_color_state(pedestrian_trafic_light, light_green, light_on);
-            pedestrian_flash_count = 0;           
+            pedestrian_blink_count = 0;           
             fm_set_flag_with_delay(FLAG_CHANGE_MODE, 3000);           
-            pedestrian_trafic_light_mode = pedestrian_flash;
+            pedestrian_trafic_light_mode = pedestrian_blink;
             break;
-        case pedestrian_flash:
+       case pedestrian_blink:
         {
-            if (pedestrian_flash_count % 2 == 0)
+           if (pedestrian_blink_count % 2 == 0)
             {                
                 light_set_color_state(pedestrian_trafic_light, light_green, light_off);
             }
-            else
+           else
             {               
                 light_set_color_state(pedestrian_trafic_light, light_green, light_on);
             }           
-            pedestrian_flash_count++;
+            pedestrian_blink_count++;
             
-            if (pedestrian_flash_count >= 5)  
+           if (pedestrian_blink_count >= 5)  
             {             
                 light_set_color_state(pedestrian_trafic_light, light_red, light_on);
                 fm_set_flag_with_delay(FLAG_CHANGE_MODE, 3000);
                 pedestrian_trafic_light_mode = pedestrian_red;
             }
-            else
+           else
             {
                 fm_set_flag_with_delay(FLAG_CHANGE_MODE, 500);
             }
-            break;
+           break;
         }
 			}
-		}
+		}	
 	}
-}

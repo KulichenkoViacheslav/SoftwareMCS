@@ -18,7 +18,7 @@ typedef enum
 typedef enum
 {
 	auto_trafic_light,
-	pedestrian_trafic_light
+	pedestrian_trafic_light,
 }trafic_light_e_t;
 
 void light_init(void);
