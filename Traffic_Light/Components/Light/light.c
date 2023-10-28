@@ -164,7 +164,7 @@ void light_pwm_update(void)
 {
 	if (light_state.red_auto == light_on)
 	{
-		HAL_GPIO_WritePin(AUTO_RED_GPIO_Port, AUTO_RED_Pin, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(AUTO_RED_GPIO_Port, AUTO_RED_Pin, GPIO_PIN_RESET);
 	}
 	if (light_state.yelow_auto == light_on)
 	{

@@ -106,8 +106,8 @@ void app_run(void)
 		}
 		if (fm_is_flag_set(FLAG_CHANGE_MODE))
 		{
-			app_change_mode();
 			fm_clear_flag(FLAG_CHANGE_MODE);
+			app_change_mode();
 		}
 	}
 }
