@@ -15,6 +15,12 @@
 5. Yelow
 */
 
+typedef enum {
+    pedestrian_red,
+    pedestrian_green,
+    pedestrian_flash,
+}pedestrian_trafic_light_mode_e_t;
+
 typedef enum
 {
 	disable = 0,
@@ -191,6 +197,49 @@ void app_change_mode(void)
 			trafic_light_mode = red;
 			fm_set_flag_with_delay(FLAG_CHANGE_MODE, 3000);
 			break;
+		}	
+		
+	switch (pedestrian_trafic_light_mode)
+    {
+        case pedestrian_red:
+        {            
+            light_set_color_state(pedestrian_trafic_light, light_red, light_on);           
+            fm_set_flag_with_delay(FLAG_CHANGE_MODE, 3000);            
+            pedestrian_trafic_light_mode = pedestrian_green;
+            break;
+        }
+        case pedestrian_green:
+        {
+            light_set_color_state(pedestrian_trafic_light, light_green, light_on);
+            pedestrian_flash_count = 0;           
+            fm_set_flag_with_delay(FLAG_CHANGE_MODE, 3000);           
+            pedestrian_trafic_light_mode = pedestrian_flash;
+            break;
+        case pedestrian_flash:
+        {
+            if (pedestrian_flash_count % 2 == 0)
+            {                
+                light_set_color_state(pedestrian_trafic_light, light_green, light_off);
+            }
+            else
+            {               
+                light_set_color_state(pedestrian_trafic_light, light_green, light_on);
+            }           
+            pedestrian_flash_count++;
+            
+            if (pedestrian_flash_count >= 5)  
+            {             
+                light_set_color_state(pedestrian_trafic_light, light_red, light_on);
+                fm_set_flag_with_delay(FLAG_CHANGE_MODE, 3000);
+                pedestrian_trafic_light_mode = pedestrian_red;
+            }
+            else
+            {
+                fm_set_flag_with_delay(FLAG_CHANGE_MODE, 500);
+            }
+            break;
+        }
+			}
 		}
 	}
 }
