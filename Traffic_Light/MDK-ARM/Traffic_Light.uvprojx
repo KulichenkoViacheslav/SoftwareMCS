@@ -615,14 +615,34 @@
           <GroupName>Components/Buzzer</GroupName>
           <Files>
             <File>
-              <FileName>buzeer.c</FileName>
+              <FileName>buzzer.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Components\Buzeer\buzeer.c</FilePath>
+              <FilePath>..\Components\Buzzer\buzzer.c</FilePath>
             </File>
             <File>
               <FileName>buzzer.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\Components\Buzeer\buzzer.h</FilePath>
+              <FilePath>..\Components\Buzzer\buzzer.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Components/RTC</GroupName>
+          <Files>
+            <File>
+              <FileName>rtc.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Components\RTC\rtc.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Components/Debuger</GroupName>
+          <Files>
+            <File>
+              <FileName>debuger.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Components\Debuger\debuger.h</FilePath>
             </File>
           </Files>
         </Group>

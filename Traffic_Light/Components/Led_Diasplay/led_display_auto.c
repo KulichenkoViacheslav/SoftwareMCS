@@ -7,7 +7,7 @@ led_display_s_t led_display_auto;
 void led_display_auto_init(void)
 {
 	led_display_init(&led_display_auto, AUTO_TIME_CLK_GPIO_Port, AUTO_TIME_CLK_Pin, AUTO_TIME_DATA_GPIO_Port, AUTO_TIME_DATA_Pin);
-	led_display_fill(&led_display_auto, false);
+	led_display_fill(&led_display_auto, true);
 }	
 
 void led_display_auto_clear(void)
