@@ -2,6 +2,6 @@
 #define BUZZER_H
 
 void buzzer_init(void);
-void buzzer_run(void);
+void buzzer_start(void);
 
 #endif
