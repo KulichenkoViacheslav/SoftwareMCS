@@ -5,6 +5,7 @@
 #include "stm32f4xx_hal.h"
 #include "flag_machine.h"
 #include "led_display_auto.h"
+#include "buzzer.h"
 
 // Variants
 /*
@@ -44,8 +45,11 @@ typedef enum
 #define TIME_GREEN_BLINK 4000
 #define TIME_YELOW 3000
 #define TIME_STOP_ALL_TRAFIC 2000
+#define TIME_SOUND_ACTIVE 200
 
 uint32_t times_trafic_light[max_light_mode] = {TIME_RED, TIME_RED_YELOW, TIME_GREEN, TIME_GREEN_BLINK, TIME_YELOW};
+uint8_t  time_sound_index = 0;
+uint32_t time_sound_frequency[] = {1800, 1300, 800};
 
 static trafic_light_mode_e_t trafic_light_mode = red;
 static trafic_light_state_e_t trafic_light_state = disable;
@@ -135,6 +139,23 @@ void app_run(void)
 		{
 			fm_clear_flag(FLAG_PEDESTRIAN_CHANGE_MODE);
 			app_pedestrian_change_mode();
+		}
+		if (fm_is_flag_set(FLAG_BUZZER_ON))
+		{
+			buzzer_sound_on();
+			fm_clear_flag(FLAG_BUZZER_ON);
+			fm_set_flag_with_delay(FLAG_BUZZER_OFF, TIME_SOUND_ACTIVE);
+		}
+		if (fm_is_flag_set(FLAG_BUZZER_OFF))
+		{
+			buzzer_sound_off();
+			fm_clear_flag(FLAG_BUZZER_OFF);
+			fm_set_flag_with_delay(FLAG_BUZZER_ON, time_sound_frequency[time_sound_index]);
+		}
+		if (fm_is_flag_set(FLAG_BUZZER_CHANGE_FREQUENCY))
+		{
+			time_sound_index = 1;
+			fm_clear_flag(FLAG_BUZZER_CHANGE_FREQUENCY);
 		}
 	}
 }
@@ -245,7 +266,11 @@ void app_pedestrian_change_mode(void)
             light_set_color_state(pedestrian_trafic_light, light_green, light_on);
 			
 			uint32_t time = times_trafic_light[red] - 2 * TIME_STOP_ALL_TRAFIC - TIME_GREEN_BLINK;
-			fm_set_flag_with_delay(FLAG_PEDESTRIAN_CHANGE_MODE, time);	
+			fm_set_flag_with_delay(FLAG_PEDESTRIAN_CHANGE_MODE, time);
+			
+			fm_set_flag(FLAG_BUZZER_ON);
+			time_sound_index = 0;
+			fm_set_flag_with_delay(FLAG_BUZZER_CHANGE_FREQUENCY, time - 4000);
 			
             pedestrian_blink_count = 0;
             pedestrian_trafic_light_mode = pedestrian_blink;
@@ -265,13 +290,19 @@ void app_pedestrian_change_mode(void)
             
 			if (pedestrian_blink_count > 8)  
             {             
-                light_set_color_state(pedestrian_trafic_light, light_red, light_on);               
+                light_set_color_state(pedestrian_trafic_light, light_green, light_off);               
                 pedestrian_trafic_light_mode = pedestrian_red;
 				fm_set_flag(FLAG_PEDESTRIAN_CHANGE_MODE);
+				
+				fm_clear_flag(FLAG_BUZZER_ON);
+				fm_clear_flag(FLAG_BUZZER_OFF);
+				fm_clear_flag_with_delay(FLAG_BUZZER_ON);
+				fm_clear_flag_with_delay(FLAG_BUZZER_OFF);
             }
 			else
             {
                 fm_set_flag_with_delay(FLAG_PEDESTRIAN_CHANGE_MODE, 500);
+				time_sound_index = 2;
             }
 			break;
 		}
