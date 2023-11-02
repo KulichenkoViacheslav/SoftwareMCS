@@ -6,6 +6,7 @@
 #include "flag_machine.h"
 #include "led_display_auto.h"
 #include "buzzer.h"
+#include "clock.h"
 
 // Variants
 /*
@@ -64,6 +65,7 @@ static void app_pedestrian_change_mode(void);
 
 void app_init(void)
 {
+	clock_init();
 	timer_init();
 	fm_init();
 	light_init();
