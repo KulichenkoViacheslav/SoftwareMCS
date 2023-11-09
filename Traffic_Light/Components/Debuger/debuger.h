@@ -1,3 +1,0 @@
-
-
-/* For configuration trafic light */
