@@ -21,7 +21,10 @@ void led_display_delay_us(uint8_t delay)
   while (delay > 0)
   {
     delay--;
-    __nop();__nop();__nop();__nop();
+    for (int j = 0; j < 10; ++j)
+	{
+		__asm__ __volatile__("nop\n\t":::"memory");
+    }
   }
 }
 
@@ -29,19 +32,23 @@ void led_display_delay_us(uint8_t delay)
 /* Start communication with LED driver tm1637 */
 static void led_display_start(led_display_s_t *led_display)
 {
-  HAL_GPIO_WritePin(led_display->gpio_dat, led_display->pin_dio, GPIO_PIN_RESET);
-  led_display_delay_us(LED_DISPLEY_BIT_DELAY);
+	HAL_GPIO_WritePin(led_display->gpio_clk, led_display->pin_clk, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(led_display->gpio_dat, led_display->pin_dio, GPIO_PIN_SET);
+	led_display_delay_us(LED_DISPLEY_BIT_DELAY);
+	HAL_GPIO_WritePin(led_display->gpio_dat, led_display->pin_dio, GPIO_PIN_RESET);
 }
 
 /* Stop communication with LED driver tm1637 */
 static void led_display_stop(led_display_s_t *led_display)
 {
-  HAL_GPIO_WritePin(led_display->gpio_dat, led_display->pin_dio, GPIO_PIN_RESET);
-  led_display_delay_us(LED_DISPLEY_BIT_DELAY);
-  HAL_GPIO_WritePin(led_display->gpio_clk, led_display->pin_clk, GPIO_PIN_SET);
-  led_display_delay_us(LED_DISPLEY_BIT_DELAY);
-  HAL_GPIO_WritePin(led_display->gpio_dat, led_display->pin_dio, GPIO_PIN_SET);
-  led_display_delay_us(LED_DISPLEY_BIT_DELAY);
+	HAL_GPIO_WritePin(led_display->gpio_clk, led_display->pin_clk, GPIO_PIN_SET);
+	led_display_delay_us(LED_DISPLEY_BIT_DELAY);
+	HAL_GPIO_WritePin(led_display->gpio_dat, led_display->pin_dio, GPIO_PIN_RESET);
+	led_display_delay_us(LED_DISPLEY_BIT_DELAY);
+	HAL_GPIO_WritePin(led_display->gpio_clk, led_display->pin_clk, GPIO_PIN_SET);
+	led_display_delay_us(LED_DISPLEY_BIT_DELAY);
+	HAL_GPIO_WritePin(led_display->gpio_dat, led_display->pin_dio, GPIO_PIN_SET);
+	led_display_delay_us(LED_DISPLEY_BIT_DELAY);
 }
 
 /* Communication with LED driver tm1637 */
@@ -100,7 +107,7 @@ void led_display_init(led_display_s_t *led_display, GPIO_TypeDef *gpio_clk, uint
 	GPIO_InitTypeDef led_pins = {0};
 	led_pins.Mode  = GPIO_MODE_OUTPUT_OD;
 	led_pins.Pull  = GPIO_NOPULL;
-	led_pins.Speed = GPIO_SPEED_FREQ_HIGH;
+	led_pins.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
 	
 	// Init clk pin
 	led_pins.Pin   = pin_clk;
@@ -111,7 +118,7 @@ void led_display_init(led_display_s_t *led_display, GPIO_TypeDef *gpio_clk, uint
 	HAL_GPIO_Init(gpio_dat, &led_pins); 
 	
 	// Set max brightess
-	led_display_brightness(led_display, 7); 
+	led_display_brightness(led_display, 2); 
 }
 
 /* Set display brightness */
