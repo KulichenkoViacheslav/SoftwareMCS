@@ -186,11 +186,13 @@ void algorithm_sound(void)
 	{
 		buzzer_set(sound_on);
 		fm_set_flag_with_delay(FLAG_AUDIBLE_SIGNAL_ON, TIME_SOUND_ACTIVE);
+		sound_active = false;
 	}
 	else
 	{
 		buzzer_set(sound_off);
 		fm_set_flag_with_delay(FLAG_AUDIBLE_SIGNAL_ON, time_sound_frequency[sound_periodic]);
+		sound_active = true;
 	}
 }
 

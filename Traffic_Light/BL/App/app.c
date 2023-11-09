@@ -8,6 +8,7 @@
 #include "buzzer.h"
 #include "clock.h"
 #include "algorithm.h"
+#include "debuger.h"
 
 // Variants
 /*
@@ -20,16 +21,19 @@
 
 void app_init(void)
 {
-	clock_init();
-	timer_init();
-	fm_init();
-	light_init();
+//	clock_init();
+//	timer_init();
+//	fm_init();
+//	light_init();
 	led_display_auto_init();
 
-	algorithm_init();
+//	algorithm_init();
 
 	/* Need activate from RTC */
-	fm_set_flag_with_delay(FLAG_TRAFIC_LIGHT_WARNING, 6000);	
+//	fm_set_flag_with_delay(FLAG_TRAFIC_LIGHT_WARNING, 6000);
+	
+//	debuger_init();
+	//led_display_auto_time(LED_DISPLAY_AUTO_RED_TIME, 25);
 }	
 
 void app_run(void)

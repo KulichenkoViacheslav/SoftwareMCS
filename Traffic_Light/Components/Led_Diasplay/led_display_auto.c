@@ -3,11 +3,15 @@
 #include "gpio.h"
 
 led_display_s_t led_display_auto;
+led_display_s_t led_display_pedestrian;
 
 void led_display_auto_init(void)
 {
 	led_display_init(&led_display_auto, AUTO_TIME_CLK_GPIO_Port, AUTO_TIME_CLK_Pin, AUTO_TIME_DATA_GPIO_Port, AUTO_TIME_DATA_Pin);
 	led_display_fill(&led_display_auto, true);
+	
+	led_display_init(&led_display_pedestrian, PEDESTRIAN_TIME_CLK_GPIO_Port, PEDESTRIAN_TIME_CLK_Pin, PEDESTRIAN_TIME_DATA_GPIO_Port, PEDESTRIAN_TIME_DATA_Pin);
+	led_display_fill(&led_display_pedestrian, true);
 }	
 
 void led_display_auto_clear(void)
