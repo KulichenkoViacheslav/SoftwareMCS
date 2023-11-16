@@ -35,5 +35,5 @@ void algorithm_pedestrian(void);
 void algorithm_pedestrian_set_step(algorithm_pedestrian_step_e_t step);
 void algorithm_sound(void);
 void algorithm_sound_set_next_step(void);
-
+void algorithm_display_change(void);
 #endif

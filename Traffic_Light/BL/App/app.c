@@ -118,5 +118,10 @@ void app_run(void)
             fm_clear_flag(FLAG_DEBUGER_RECEIVED_COMMAND);
             debuger_execute_command();
         }
+        if (fm_is_flag_set(FLAG_DISPLAY_AUTO_CHANGE))
+        {
+            fm_clear_flag(FLAG_DISPLAY_AUTO_CHANGE);
+            algorithm_display_change();
+        }
     }
 }

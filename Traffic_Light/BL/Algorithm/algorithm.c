@@ -3,6 +3,7 @@
 #include "buzzer.h"
 #include "flag_machine.h"
 #include <stdbool.h>
+#include "led_display_auto.h"
 
 typedef enum {
     sound_norm  =  0,
@@ -20,6 +21,8 @@ static uint32_t times_trafic_light[max_light_mode] = {TIME_RED, TIME_RED_YELOW, 
 static algorithm_sound_periodic_e_t sound_periodic = sound_norm;
 static bool sound_active = false;
 static uint32_t time_sound_frequency[] = {1800, 1300, 800};
+static uint32_t time_left = 0;
+
 
 void algorithm_init(void)
 {
@@ -51,6 +54,12 @@ void algorithm_auto(void)
             light_set_color_state(auto_trafic_light, light_all, light_off);
             light_set_color_state(auto_trafic_light, light_red, light_on);
             fm_set_flag_with_delay(FLAG_ALGORITHM_AUTO_NEXT_STEP, times_trafic_light[auto_trafic_light_mode]);
+            
+            /*time_left visualization*/
+            time_left = TIME_RED / 1000;
+            fm_set_flag(FLAG_DISPLAY_AUTO_CHANGE);
+            
+            
             
             /* Config fo pedestrian trafic light*/
             pedestrian_trafic_light_mode = pedestrian_green;
@@ -209,4 +218,17 @@ void algorithm_sound_set_next_step(void)
         fm_clear_flag(FLAG_AUDIBLE_SIGNAL_ON);
         fm_clear_flag_with_delay(FLAG_AUDIBLE_SIGNAL_ON);
     }
+}
+void algorithm_display_change(void)
+{
+  led_display_auto_time(LED_DISPLAY_AUTO_RED_TIME, time_left);
+  time_left --;
+  if (time_left == 0)
+  {
+    led_display_auto_clear();
+  }
+  else
+  {
+    fm_set_flag_with_delay(FLAG_DISPLAY_AUTO_CHANGE,1000);
+  }
 }
