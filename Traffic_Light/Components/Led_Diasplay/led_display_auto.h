@@ -5,8 +5,8 @@
 
 typedef enum
 {
-	LED_DISPLAY_AUTO_RED_TIME,
-	LED_DISPLAY_AUTO_GREEN_TIME,
+    LED_DISPLAY_AUTO_RED_TIME,
+    LED_DISPLAY_AUTO_GREEN_TIME,
 }led_display_auto_color_time_e_t;
 
 void led_display_auto_init(void);

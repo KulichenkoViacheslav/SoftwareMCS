@@ -7,11 +7,11 @@
 
 typedef struct
 {
-	GPIO_TypeDef *gpio_clk;
-	GPIO_TypeDef *gpio_dat;
-	uint16_t     pin_clk;   
-	uint16_t     pin_dio;  
-	uint8_t      brightness;
+    GPIO_TypeDef *gpio_clk;
+    GPIO_TypeDef *gpio_dat;
+    uint16_t     pin_clk;   
+    uint16_t     pin_dio;  
+    uint8_t      brightness;
 }led_display_s_t;
 
 void led_display_init(led_display_s_t *led_display, GPIO_TypeDef *gpio_clk, uint16_t pin_clk, GPIO_TypeDef *gpio_dat, uint16_t pin_dat);

@@ -3,8 +3,8 @@
 
 typedef enum
 {
-	sound_off = 0,
-	sound_on  = 1,
+    sound_off = 0,
+    sound_on  = 1,
 }buzzer_sound_state_e_t;
 
 void buzzer_init(void);

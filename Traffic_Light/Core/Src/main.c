@@ -93,8 +93,8 @@ int main(void)
   MX_RTC_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
-	app_init();
-	app_run();
+    app_init();
+    app_run();
   /* USER CODE END 2 */
 
   /* Infinite loop */

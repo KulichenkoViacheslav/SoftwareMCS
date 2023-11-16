@@ -13,12 +13,12 @@
 
 typedef enum
 {
-	red = 0,
-	red_yelow,
-	green,
-	green_blink,
-	yelow,
-	max_light_mode
+    red = 0,
+    red_yelow,
+    green,
+    green_blink,
+    yelow,
+    max_light_mode
 }algorithm_auto_step_e_t;
 
 typedef enum {

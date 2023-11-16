@@ -5,22 +5,22 @@
 
 typedef struct
 {
-	uint32_t year;
-	uint32_t month;
-	uint32_t day;
+    uint32_t year;
+    uint32_t month;
+    uint32_t day;
 }clock_data_s_t;
 
 typedef struct
 {
-	uint32_t hours;
-	uint32_t minutes;
-	uint32_t seconds;
+    uint32_t hours;
+    uint32_t minutes;
+    uint32_t seconds;
 }clock_time_s_t;
 
 typedef struct
 {
-	clock_data_s_t data;
-	clock_time_s_t time;
+    clock_data_s_t data;
+    clock_time_s_t time;
 }clock_data_time_s_t;
 
 void clock_init(void);
