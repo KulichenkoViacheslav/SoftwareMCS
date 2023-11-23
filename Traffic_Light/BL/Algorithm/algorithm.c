@@ -64,7 +64,7 @@ void algorithm_button_pressed(void)
     display_auto.time_left = (time_to_unlock + TIME_GREEN_BLINK) / 1000;
     fm_set_flag(FLAG_DISPLAY_AUTO_CHANGE);
     
-    display_pedestrian.time_left = display_auto.time_left + TIME_YELOW + TIME_STOP_ALL_TRAFIC / 1000;
+    display_pedestrian.time_left = display_auto.time_left + (TIME_YELOW + TIME_STOP_ALL_TRAFIC) / 1000;
     fm_set_flag(FLAG_DISPLAY_PEDESTRIAN_CHANGE);
 }
 
@@ -209,6 +209,7 @@ void algorithm_pedestrian(void)
             /* Config countdown timer and display */
             display_pedestrian.time_left = (time + TIME_GREEN_BLINK) / 1000;
             display_pedestrian.state = LED_DISPLAY_PEDESTRIAN_GREEN_TIME;
+            fm_clear_flag_with_delay(FLAG_DISPLAY_PEDESTRIAN_CHANGE);
             fm_set_flag(FLAG_DISPLAY_PEDESTRIAN_CHANGE);
             
             /* Config sound */

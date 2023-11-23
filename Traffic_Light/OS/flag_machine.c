@@ -118,6 +118,7 @@ void fm_timer_delay(void)
             {
                 fm_set_flag(fm_flag_delay_context[i].flag);
                 fm_flag_delay_context[i].state = off;
+                fm_flag_delay_context[i].flag = 0;
             }
         }
     }
