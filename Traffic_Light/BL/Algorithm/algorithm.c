@@ -30,6 +30,7 @@ static bool sound_active = false;
 static uint32_t time_sound_frequency[] = {1800, 1300, 800};
 static display_state_s_t display_auto = {0};
 static display_state_s_t display_pedestrian = {0};
+static bool trafic_light_cycle_mode = true;
 
 void algorithm_init(void)
 {
@@ -50,6 +51,11 @@ void algorithm_yelow_blink(void)
         light_set_color_state(auto_trafic_light, light_yelow, light_off);
         blinker_switch = true;
     }
+}
+
+void algorithm_cycle_trafic(void)
+{
+  
 }
 
 void algorithm_button_pressed(void)
@@ -105,8 +111,17 @@ void algorithm_auto(void)
         {            
             light_set_color_state(auto_trafic_light, light_all, light_off);
             light_set_color_state(auto_trafic_light, light_green, light_on);
-            fm_set_flag(FLAG_BUTTON_CHECK);
-            fm_set_flag_with_delay(FLAG_BUTTON_UNLOCK, TIME_LOCK_BUTTON);
+            
+            if (trafic_light_cycle_mode == true)
+            {
+               fm_set_flag_with_delay(FLAG_ALGORITHM_AUTO_NEXT_STEP, times_trafic_light[auto_trafic_light_mode]);
+            }            
+            else
+            {
+              fm_set_flag(FLAG_BUTTON_CHECK);
+              fm_set_flag_with_delay(FLAG_BUTTON_UNLOCK, TIME_LOCK_BUTTON);
+            }
+          
 
             /* Config countdown timer and display */
             if (fm_is_flag_set(FLAG_BUTTON_PRESSED))
@@ -125,6 +140,7 @@ void algorithm_auto(void)
             trafic_light_blink = 8;
             break;
         }
+    
         case green_blink:
         {
             if ((trafic_light_blink % 2) == 0)
@@ -321,3 +337,15 @@ void algorithm_display_pedestrian_change(void)
     }
 }
 
+void algorithm_trafic_light_mode_switch(void) 
+{
+ if (trafic_light_cycle_mode == true )
+ {
+   trafic_light_cycle_mode = false;
+ }
+ else
+ {
+   trafic_light_cycle_mode = true;
+ }
+ 
+}

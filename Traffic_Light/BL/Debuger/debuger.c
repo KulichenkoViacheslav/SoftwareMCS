@@ -118,6 +118,21 @@ void debuger_execute_command(void)
                 fm_set_flag(FLAG_BUTTON_PRESSED);
             }
         }
+        else if (memcmp(command.name, "cycle", command.name_size) == 0)
+        {
+            if (memcmp(command.value, "on", 2) == 0)
+            {
+                fm_set_flag(FLAG_TRAFIC_LIGHT_CYCLE_ON);
+            }
+            else if (memcmp(command.value, "off", 3) == 0)
+            {
+                fm_set_flag(FLAG_TRAFIC_LIGHT_CYCLE_OFF);
+            }
+            else 
+            {
+                printf("> No Matching Value Found\r\n"); 
+            }
+        }
         else
         {
             printf("> No Matching Command Found\r\n");
@@ -197,3 +212,4 @@ static bool debuger_convert_string_to_time(uint8_t * str, clock_time_s_t * time)
     }
     return status;
 }
+
