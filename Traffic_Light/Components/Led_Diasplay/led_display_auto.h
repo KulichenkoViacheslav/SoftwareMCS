@@ -11,6 +11,7 @@ typedef enum
 
 void led_display_auto_init(void);
 void led_display_auto_clear(void);
+void led_display_auto_infinity(led_display_auto_color_time_e_t color);
 void led_display_auto_time(led_display_auto_color_time_e_t color, uint8_t time);
 
 #endif

@@ -182,7 +182,7 @@ void led_display_write_int(led_display_s_t *led_display, int16_t digit, uint8_t 
         }
         else if((str[i] >= '0') && (str[i] <= '9'))
         {
-            buffer[i] = led_display_digit[str[i] - 48];
+            buffer[i] = led_display_digit[str[i] - 0x30];
         }
         else
         {
@@ -202,6 +202,6 @@ void led_display_fill(led_display_s_t *led_display, bool enable)
     }
     else
     {
-        led_display_write_segment(led_display, led_display_off, 6, 0);    
+        led_display_write_segment(led_display, led_display_off, 6, 0);
     }        
 }

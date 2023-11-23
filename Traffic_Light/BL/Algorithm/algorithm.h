@@ -10,6 +10,8 @@
 #define TIME_SOUND_ACTIVE 200
 #define TIME_SOUND_PERIODIC_CHANGE 4000
 #define TIME_BLINK 500
+#define TIME_LOCK_BUTTON 40000
+#define TIME_INFINITY (0xFFFFFFFF)
 
 typedef enum
 {
@@ -29,11 +31,14 @@ typedef enum {
 
 void algorithm_init(void);
 void algorithm_yelow_blink(void);
+void algorithm_button_pressed(void);
 void algorithm_auto(void);
 void algorithm_auto_set_step(algorithm_auto_step_e_t step);
 void algorithm_pedestrian(void);
 void algorithm_pedestrian_set_step(algorithm_pedestrian_step_e_t step);
 void algorithm_sound(void);
 void algorithm_sound_set_next_step(void);
-void algorithm_display_change(void);
+void algorithm_display_auto_change(void);
+void algorithm_display_pedestrian_change(void);
+
 #endif

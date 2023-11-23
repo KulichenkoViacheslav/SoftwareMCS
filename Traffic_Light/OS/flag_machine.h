@@ -19,7 +19,7 @@ typedef enum
   
     /*Display */
     FLAG_DISPLAY_AUTO_CHANGE,
-
+    FLAG_DISPLAY_PEDESTRIAN_CHANGE,
     
     FLAG_ALGORITHM_AUTO_NEXT_STEP,
     FLAG_ALGORITHM_PEDESTRIAN_NEXT_STEP,
@@ -36,12 +36,13 @@ typedef enum
     FLAG_DEBUGER_RECEIVED_COMMAND,
 }fm_flags_e_t;
 
-void fm_init(void);
-void fm_clear_all_flags(void);
-bool fm_is_flag_set(fm_flags_e_t flag);
-void fm_set_flag(fm_flags_e_t flag);
-void fm_clear_flag(fm_flags_e_t flag);
-void fm_set_flag_with_delay(fm_flags_e_t flag, uint32_t time);
-void fm_clear_flag_with_delay(fm_flags_e_t flag);
+void     fm_init(void);
+void     fm_clear_all_flags(void);
+bool     fm_is_flag_set(fm_flags_e_t flag);
+void     fm_set_flag(fm_flags_e_t flag);
+void     fm_clear_flag(fm_flags_e_t flag);
+void     fm_set_flag_with_delay(fm_flags_e_t flag, uint32_t time);
+uint32_t fm_get_delay_for_flag(fm_flags_e_t flag);
+void     fm_clear_flag_with_delay(fm_flags_e_t flag);
 
 #endif

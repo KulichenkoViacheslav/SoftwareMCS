@@ -5,6 +5,7 @@
 #include "stm32f4xx_hal.h"
 #include "flag_machine.h"
 #include "led_display_auto.h"
+#include "led_display_pedestrian.h"
 #include "buzzer.h"
 #include "clock.h"
 #include "algorithm.h"
@@ -27,6 +28,7 @@ void app_init(void)
     fm_init();
     light_init();
     led_display_auto_init();
+    led_display_pedestrian_init();
 
     algorithm_init();
     
@@ -75,12 +77,13 @@ void app_run(void)
         }
         if (fm_is_flag_set(FLAG_BUTTON_PRESSED))
         {
-            if (!fm_is_flag_set(FLAG_BUTTON_LOCK))
-            {
-                fm_set_flag(FLAG_ALGORITHM_AUTO_NEXT_STEP);
-                fm_clear_flag(FLAG_BUTTON_PRESSED);
-                fm_set_flag(FLAG_BUTTON_LOCK);
-            }
+            fm_clear_flag(FLAG_BUTTON_PRESSED);
+            
+            /* Stop read pedestrian button */
+            fm_clear_flag_with_delay(FLAG_BUTTON_CHECK);
+            fm_clear_flag(FLAG_BUTTON_CHECK);
+            
+            algorithm_button_pressed();
         }
         if (fm_is_flag_set(FLAG_BUTTON_CHECK))
         {
@@ -121,7 +124,12 @@ void app_run(void)
         if (fm_is_flag_set(FLAG_DISPLAY_AUTO_CHANGE))
         {
             fm_clear_flag(FLAG_DISPLAY_AUTO_CHANGE);
-            algorithm_display_change();
+            algorithm_display_auto_change();
+        }
+        if (fm_is_flag_set(FLAG_DISPLAY_PEDESTRIAN_CHANGE))
+        {
+            fm_clear_flag(FLAG_DISPLAY_PEDESTRIAN_CHANGE);
+            algorithm_display_pedestrian_change();
         }
     }
 }

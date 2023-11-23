@@ -92,23 +92,30 @@ void debuger_execute_command(void)
             }
             else
             {
-                printf("> Incorrect format of Value\r\n");
+                printf("> Incorrect Format of Value\r\n");
             }
         }
         else if (memcmp(command.name, "set state", command.name_size) == 0)
         {
             fm_clear_all_flags();
-            if (command.value[0] == '0')
+            if (memcmp(command.value, "off", 3) == 0)
             {
                 fm_set_flag(FLAG_TRAFIC_LIGHT_DISABLE);
             }
-            if (command.value[0] == '1')
+            else if (memcmp(command.value, "on", 2) == 0)
+            {
+                fm_set_flag(FLAG_TRAFIC_LIGHT_ENABLE);
+            }
+            else
             {
                 fm_set_flag(FLAG_TRAFIC_LIGHT_WARNING);
             }
-            if (command.value[0] == '2')
+        }
+        else if (memcmp(command.name, "button", command.name_size) == 0)
+        {
+            if (memcmp(command.value, "on", 2) == 0)
             {
-                fm_set_flag(FLAG_TRAFIC_LIGHT_ENABLE);
+                fm_set_flag(FLAG_BUTTON_PRESSED);
             }
         }
         else
